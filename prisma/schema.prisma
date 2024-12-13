@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"  
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid()) // Clerk user IDs are typically strings
+  email     String   @unique
+  name      String?
+  trades    Trade[]  // Relation to trades
+}
+
+model Trade {
+  id             String      @id @default(cuid())
+  title          String
+  description    String?
+  offeredItems   String   // JSON or a delimited string representing offered items
+  requestedItems String   // JSON or a delimited string representing requested items
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+}
+
